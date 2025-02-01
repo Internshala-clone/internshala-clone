@@ -1,12 +1,13 @@
-import "./App.css";
+import React from "react";
 import Navbar from "./components/Navbar";
-
-function App() {
+import TrendingSection from "./components/TrendingSection";
+const App = () => {
   return (
     <div>
       <Navbar />
+      <TrendingSection />
     </div>
   );
-}
+};
 
 export default App;
