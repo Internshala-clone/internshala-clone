@@ -1,11 +1,19 @@
 import React from "react";
-import Navbar from "./components/Navbar";
-import TrendingSection from "./components/TrendingSection";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainPage from "./components/MainPage";
+import Signup from "./components/SignUp";
+
+import Login from "./components/Login";
 const App = () => {
   return (
     <div>
-      <Navbar />
-      <TrendingSection />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/" element={<MainPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 };

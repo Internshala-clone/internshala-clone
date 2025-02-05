@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MdSearch } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import app from "../config/firebase-config";
 
 const Navbar = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [internship, setInternship] = useState(false);
   const [jobs, setJobs] = useState(false);
   const [courses, setCourses] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   // Handle hover state
   const handleMouseEnter = () => setIsHovered(true);
@@ -20,6 +26,37 @@ const Navbar = () => {
 
   const handleCoursesEnter = () => setCourses(true);
   const handleCoursesLeave = () => setCourses(false);
+
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  useEffect(() => {
+    // Listen for authentication state changes
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        // Fetch user details from Firestore
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        if (userDoc.exists()) {
+          setUser(userDoc.data()); // Set user data from Firestore
+        } else {
+          setUser({ name: "User" }); // Fallback if no Firestore data
+        }
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener
+  }, [auth, db]);
+
+  const handleLoginClick = () => {
+    navigate("/login");
+  };
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    setUser(null);
+  };
 
   return (
     <div>
@@ -72,15 +109,32 @@ const Navbar = () => {
         </div>
 
         {/* Login/Signup */}
-        <div className="h-8 px-5 flex items-center justify-center border-1 border-sky-500 rounded-sm text-sky-500 mx-2 hover:cursor-pointer font-bold">
-          Login
-        </div>
-        <div className="h-8 px-5 flex items-center justify-center border-1 border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
-          Candidate Sign-up
-        </div>
-        <div className="h-8 px-5 flex items-center justify-center border-1 border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
-          Employer Sign-up
-        </div>
+        {user ? (
+          <div className="flex items-center mx-2">
+            <span className="font-bold text-sky-500">{user.name}</span>
+            <button
+              className="ml-4 h-8 px-5 flex items-center justify-center border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-white font-bold"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <>
+            <div
+              className="h-8 px-5 flex items-center justify-center border border-sky-500 rounded-sm text-sky-500 mx-2 hover:cursor-pointer font-bold"
+              onClick={handleLoginClick}
+            >
+              Login
+            </div>
+            <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
+              Candidate Sign-up
+            </div>
+            <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
+              Employer Sign-up
+            </div>
+          </>
+        )}
       </div>
       {internship && (
         <div className="w-100 h-100 bg-white z-20 relative shadow-md">
