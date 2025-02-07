@@ -112,7 +112,7 @@ const Navbar = () => {
         {/* Login/Signup */}
         {user ? (
           <div className="flex items-center mx-2">
-            <span className="font-bold text-sky-500">{user.name}</span>
+            <span className="font-bold text-sky-500">{user.firstName}</span>
             <button
               className="ml-4 h-8 px-5 flex items-center justify-center border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-white font-bold"
               onClick={handleLogout}
