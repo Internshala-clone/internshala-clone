@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import app from "../config/firebase-config";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -127,12 +128,16 @@ const Navbar = () => {
             >
               Login
             </div>
+            <Link to="/studentsignup">
             <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
-              Candidate Sign-up
+              Candidate Sign-up 
             </div>
+            </Link>
+            <Link to="/employeesignup">
             <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
               Employer Sign-up
             </div>
+            </Link>
           </>
         )}
       </div>
