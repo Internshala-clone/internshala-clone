@@ -14,46 +14,22 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Handle hover state
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
-
-  // Handle individual menu item hover states
-  const handleInternshipEnter = () => setInternship(true);
-  const handleInternshipLeave = () => setInternship(false);
-
-  const handleJobsEnter = () => setJobs(true);
-  const handleJobsLeave = () => setJobs(false);
-
-  const handleCoursesEnter = () => setCourses(true);
-  const handleCoursesLeave = () => setCourses(false);
-
   const auth = getAuth(app);
   const db = getFirestore(app);
 
   useEffect(() => {
-    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Fetch user details from Firestore
         const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        if (userDoc.exists()) {
-          setUser(userDoc.data()); // Set user data from Firestore
-        } else {
-          setUser({ name: "User" }); // Fallback if no Firestore data
-        }
+        setUser(userDoc.exists() ? userDoc.data() : { name: "User" });
       } else {
         setUser(null);
       }
     });
-
-    return () => unsubscribe(); // Cleanup listener
+    return () => unsubscribe();
   }, [auth, db]);
 
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
+  const handleLoginClick = () => navigate("/login");
   const handleLogout = async () => {
     await auth.signOut();
     setUser(null);
@@ -62,9 +38,8 @@ const Navbar = () => {
   return (
     <div>
       <div
-        className={`h-20 w-screen bg-white flex items-center justify-center shadow-md relative z-20 `}
-      >
-        {/* Navbar Branding */}
+  className="h-20 w-screen bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md relative z-20">
+
         <div
           className="mx-20 hover:cursor-pointer font-bold"
           style={{
@@ -76,45 +51,28 @@ const Navbar = () => {
             width: "113px",
             height: "31px",
           }}
-        >
-          {/*<span className="text-sky-500">INTERN</span>SHALA*/}
-        </div>
+        ></div>
 
-        {/* Navbar Links */}
-        <div
-          className="h-full px-5 items-center justify-center flex hover:bg-sky-100 hover:text-sky-500 cursor-pointer"
-          onMouseEnter={handleInternshipEnter}
-          onMouseLeave={handleInternshipLeave}
-        >
+        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
           Internships
         </div>
-        <div
-          className="h-full px-5 items-center justify-center flex hover:bg-sky-100 hover:text-sky-500 cursor-pointer"
-          onMouseEnter={handleJobsEnter}
-          onMouseLeave={handleJobsLeave}
-        >
+        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
           Jobs
         </div>
-        <div
-          className="h-full px-5 items-center justify-center flex hover:bg-sky-100 hover:text-sky-500 cursor-pointer"
-          onMouseEnter={handleCoursesEnter}
-          onMouseLeave={handleCoursesLeave}
-        >
+        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
           Courses
         </div>
 
-        {/* Search Icon */}
-        <div className="ml-20 h-full hover:cursor-pointer flex items-center justify-center mx-5">
+        <div className="ml-20 h-full flex items-center justify-center mx-5 hover:text-yellow-300 cursor-pointer">
           <MdSearch size={20} />
           <span className="ml-0.5">Search</span>
         </div>
 
-        {/* Login/Signup */}
         {user ? (
           <div className="flex items-center mx-2">
-            <span className="font-bold text-sky-500">{user.firstName}</span>
+            <span className="font-bold text-yellow-300">{user.firstName}</span>
             <button
-              className="ml-4 h-8 px-5 flex items-center justify-center border border-red-500 rounded-sm text-red-500 hover:bg-red-500 hover:text-white font-bold"
+              className="ml-4 h-8 px-5 flex items-center justify-center border border-white rounded-sm text-white hover:bg-yellow-300 hover:text-gray-900 font-bold"
               onClick={handleLogout}
             >
               Logout
@@ -123,42 +81,24 @@ const Navbar = () => {
         ) : (
           <>
             <div
-              className="h-8 px-5 flex items-center justify-center border border-sky-500 rounded-sm text-sky-500 mx-2 hover:cursor-pointer font-bold"
+              className="h-8 px-5 flex items-center justify-center border border-white rounded-sm text-white mx-2 hover:cursor-pointer font-bold hover:bg-yellow-300 hover:text-gray-900"
               onClick={handleLoginClick}
             >
               Login
             </div>
             <Link to="/studentsignup">
-            <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
-              Candidate Sign-up 
-            </div>
+              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
+                Candidate Sign-up
+              </div>
             </Link>
             <Link to="/employeesignup">
-            <div className="h-8 px-5 flex items-center justify-center border border-sky-500 bg-sky-500 rounded-sm text-white mx-2 hover:cursor-pointer font-bold">
-              Employer Sign-up
-            </div>
+              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
+                Employer Sign-up
+              </div>
             </Link>
           </>
         )}
       </div>
-      {internship && (
-        <div className="w-100 h-100 bg-white z-20 relative shadow-md">
-          Internship
-        </div>
-      )}
-      {jobs && (
-        <div className="w-100 h-100 bg-white z-20 relative shadow-md">Jobs</div>
-      )}
-      {courses && (
-        <div className="w-100 h-100 bg-white z-20 relative shadow-md">
-          Courses
-        </div>
-      )}
-
-      {/* Add a background overlay that darkens */}
-      {(internship || jobs || courses) && (
-        <div className="absolute inset-0 bg-black opacity-50 z-10 pointer-events-none"></div>
-      )}
     </div>
   );
 };
