@@ -37,7 +37,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="h-20 w-screen bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md relative z-20">
+      <div className="fixed top-0 left-0 w-full h-20 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md z-50">
         <div
           className="mx-20 hover:cursor-pointer font-bold"
           style={{
