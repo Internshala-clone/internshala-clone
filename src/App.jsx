@@ -5,6 +5,8 @@ import Signup from "./components/SignUp";
 import StudentSignup from "./components/StudentSignup";
 import EmployeeSignup from "./components/EmployeeSignup";
 import TpoSignup from "./components/TpoSignup";
+import Internships from "./components/Internships";
+import Jobs from "./components/Jobs";
 
 import Login from "./components/Login";
 const App = () => {
@@ -18,6 +20,8 @@ const App = () => {
           <Route path="/tposignup" element={<TpoSignup />}></Route>
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<MainPage />} />
+          <Route path="/internship" element= {<Internships/>} />
+          <Route path="/job" element= {<Jobs/>} />
         </Routes>
       </Router>
     </div>

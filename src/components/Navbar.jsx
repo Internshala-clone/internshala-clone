@@ -7,10 +7,6 @@ import app from "../config/firebase-config";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [internship, setInternship] = useState(false);
-  const [jobs, setJobs] = useState(false);
-  const [courses, setCourses] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
@@ -36,41 +32,34 @@ const Navbar = () => {
   };
 
   return (
-    <div>
-      <div className="fixed top-0 left-0 w-full h-20 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md z-50">
-        <div
-          className="mx-20 hover:cursor-pointer font-bold"
-          style={{
-            backgroundImage:
-              "url(https://internshala.com/static/images/home/sprites/img-assets.png)",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "0 0",
-            backgroundSize: "254px",
-            width: "113px",
-            height: "31px",
-          }}
-        ></div>
+    <div className="fixed top-0 left-0 w-full h-20 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-between px-24 shadow-md z-50">
+      <div
+        className="w-28 h-8 bg-no-repeat bg-cover cursor-pointer"
+        style={{
+          backgroundImage:
+            "url(https://internshala.com/static/images/home/sprites/img-assets.png)",
+          backgroundPosition: "0 0",
+          backgroundSize: "254px",
+        }}
+      ></div>
 
-        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
-          Internships
-        </div>
-        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
-          Jobs
-        </div>
-        <div className="h-full px-5 items-center justify-center flex hover:text-yellow-300 cursor-pointer">
-          Courses
-        </div>
+      <div className="flex space-x-6 text-white font-semibold">
+        <Link to="/internship" className="hover:text-yellow-300 cursor-pointer">Internships</Link>
+        <Link to="/job" className="hover:text-yellow-300 cursor-pointer">Jobs</Link>
+        <div className="hover:text-yellow-300 cursor-pointer">Courses</div>
+      </div>
 
-        <div className="ml-20 h-full flex items-center justify-center mx-5 hover:text-yellow-300 cursor-pointer">
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center text-white cursor-pointer hover:text-yellow-300">
           <MdSearch size={20} />
-          <span className="ml-0.5">Search</span>
+          <span className="ml-1">Search</span>
         </div>
 
         {user ? (
-          <div className="flex items-center mx-2">
-            <span className="font-bold text-yellow-300">{user.firstName}</span>
+          <div className="flex items-center">
+            <span className="font-bold text-yellow-300 mr-4">{user.firstName}</span>
             <button
-              className="ml-4 h-8 px-5 flex items-center justify-center border border-white rounded-sm text-white hover:bg-yellow-300 hover:text-gray-900 font-bold"
+              className="px-4 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-gray-900 font-bold"
               onClick={handleLogout}
             >
               Logout
@@ -79,26 +68,14 @@ const Navbar = () => {
         ) : (
           <>
             <div
-              className="h-8 px-5 flex items-center justify-center border border-white rounded-sm text-white mx-2 hover:cursor-pointer font-bold hover:bg-yellow-300 hover:text-gray-900"
+              className="px-4 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-gray-900 font-bold cursor-pointer"
               onClick={handleLoginClick}
             >
               Login
             </div>
-            <Link to="/studentsignup">
-              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
-                Candidate Sign-up
-              </div>
-            </Link>
-            <Link to="/employeesignup">
-              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
-                Employer Sign-up
-              </div>
-            </Link>
-            <Link to="/tposignup">
-              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
-                TPO Sign-up
-              </div>
-            </Link>
+            <Link to="/studentsignup" className="btn-yellow">Candidate Sign-up</Link>
+            <Link to="/employeesignup" className="btn-yellow">Employer Sign-up</Link>
+            <Link to="/tposignup" className="btn-yellow">TPO Sign-up</Link>
           </>
         )}
       </div>
