@@ -37,9 +37,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div
-  className="h-20 w-screen bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md relative z-20">
-
+      <div className="h-20 w-screen bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-center shadow-md relative z-20">
         <div
           className="mx-20 hover:cursor-pointer font-bold"
           style={{
@@ -94,6 +92,11 @@ const Navbar = () => {
             <Link to="/employeesignup">
               <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
                 Employer Sign-up
+              </div>
+            </Link>
+            <Link to="/tposignup">
+              <div className="h-8 px-5 flex items-center justify-center border border-yellow-300 bg-yellow-300 rounded-sm text-gray-900 mx-2 hover:cursor-pointer font-bold hover:bg-white hover:text-yellow-300">
+                TPO Sign-up
               </div>
             </Link>
           </>

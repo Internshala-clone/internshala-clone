@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 import app from "../config/firebase-config";
-import { registerEmployer, getUsers } from "./api";
 import axios from "axios";
 
-const EmployeeSignup = () => {
+const TpoSignup = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,15 +21,13 @@ const EmployeeSignup = () => {
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Handle Input Change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Signup Function
   const signUp = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error state
+    setError("");
 
     const { email, password, confirmPassword, firstName, lastName, mobile } =
       formData;
@@ -40,7 +37,6 @@ const EmployeeSignup = () => {
       return;
     }
 
-    // Basic validation
     if (!/\S+@\S+\.\S+/.test(email)) {
       setError("Invalid email address.");
       return;
@@ -51,7 +47,7 @@ const EmployeeSignup = () => {
       return;
     }
 
-    setLoading(true); // Start loading state
+    setLoading(true);
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -66,51 +62,38 @@ const EmployeeSignup = () => {
         firstName,
         lastName,
         mobile,
-        userType: "employee",
+        userType: "tpo",
         createdAt: new Date(),
       });
 
-      const response = await axios.post("http://localhost:5000/register", {
+      await axios.post("http://localhost:5000/register", {
         email,
         password,
         firstName,
         lastName,
         mobile,
-        userType: "employee",
+        userType: "tpo",
       });
 
       navigate("/");
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false);
     }
   };
 
-  // Fetch Users on Mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const users = await getUsers();
-        console.log("Users List:", users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-    fetchUsers();
-  }, []);
-
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">Official Email Id</h2>
+        <h2 className="text-lg font-semibold mb-4">TPO Signup</h2>
         {error && <p className="text-red-500 text-center mb-3">{error}</p>}
 
         <form onSubmit={signUp}>
           <input
             type="email"
             name="email"
-            placeholder="name@company.com"
+            placeholder="name@institution.com"
             value={formData.email}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -185,23 +168,17 @@ const EmployeeSignup = () => {
             />
           </div>
 
-          <p className="text-sm text-gray-600 mt-3">
-            By clicking on <span className="font-bold">Post for Free</span>, you
-            agree to our{" "}
-            <span className="text-blue-500 cursor-pointer">T&C.</span>
-          </p>
-
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-bold py-2 rounded-md mt-4 hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? "Processing..." : "Post for Free"}
+            {loading ? "Processing..." : "Register"}
           </button>
         </form>
 
         <p className="text-center text-gray-600 mt-4">
-          Already registered?{" "}
+          Already have an account?{" "}
           <Link to="/login" className="text-blue-500">
             Login
           </Link>
@@ -211,4 +188,4 @@ const EmployeeSignup = () => {
   );
 };
 
-export default EmployeeSignup;
+export default TpoSignup;

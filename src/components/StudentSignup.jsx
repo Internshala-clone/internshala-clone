@@ -3,36 +3,51 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 import app from "../config/firebase-config";
+import axios from "axios";
 
 const StudentSignup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    mobile: "",
+  });
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // Handle Input Change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Sign Up Function
   const signUp = async (e) => {
     e.preventDefault();
     setError(""); // Reset error state
 
+    const { email, password, confirmPassword, firstName, lastName, mobile } =
+      formData;
+
+    // Basic Validations
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
+      return setError("Passwords do not match.");
     }
 
-    // Basic validation
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("Invalid email address.");
-      return;
+      return setError("Invalid email address.");
     }
 
-    setLoading(true); // Start loading state
+    if (!/^\d{10}$/.test(mobile)) {
+      return setError("Enter a valid 10-digit mobile number.");
+    }
+
+    setLoading(true); // Start loading
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -42,20 +57,31 @@ const StudentSignup = () => {
       );
       const user = userCredential.user;
 
-      // Save user details in Firestore
+      // Save user in Firestore
       await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        firstName: firstName,
-        lastName: lastName,
+        email,
+        firstName,
+        lastName,
         userType: "student",
         createdAt: new Date(),
+        mobile,
+      });
+
+      // Save in PostgreSQL backend
+      await axios.post("http://localhost:5000/register", {
+        email,
+        password,
+        firstName,
+        lastName,
+        mobile,
+        userType: "student",
       });
 
       navigate("/");
     } catch (error) {
-      setError(error.message); // Set error message for display
+      setError(error.message);
     } finally {
-      setLoading(false); // End loading state
+      setLoading(false); // Stop loading
     }
   };
 
@@ -94,37 +120,43 @@ const StudentSignup = () => {
             <label className="block text-gray-600 text-sm mb-1">Email</label>
             <input
               type="email"
+              name="email"
               placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
+
           <div>
             <label className="block text-gray-600 text-sm mb-1">Password</label>
             <input
               type="password"
+              name="password"
               placeholder="Must be at least 6 characters"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
+
           <div>
             <label className="block text-gray-600 text-sm mb-1">
               Confirm Password
             </label>
             <input
               type="password"
+              name="confirmPassword"
               placeholder="Re-enter your password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={formData.confirmPassword}
+              onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
+
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-gray-600 text-sm mb-1">
@@ -132,9 +164,10 @@ const StudentSignup = () => {
               </label>
               <input
                 type="text"
+                name="firstName"
                 placeholder="John"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={formData.firstName}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
@@ -145,13 +178,29 @@ const StudentSignup = () => {
               </label>
               <input
                 type="text"
+                name="lastName"
                 placeholder="Doe"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={formData.lastName}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-600 text-sm mb-1">
+              Mobile Number
+            </label>
+            <input
+              type="text"
+              name="mobile"
+              placeholder="Enter mobile number"
+              value={formData.mobile}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
           </div>
 
           <p className="text-xs text-gray-600 text-center">
