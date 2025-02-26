@@ -9,6 +9,7 @@ import Internships from "./components/Internships";
 import Jobs from "./components/Jobs";
 import JobPostingForm from "./components/JobPostingForm";
 import Jobapplyform from "./components/Jobapplyform";
+import TpoPage from "./components/TpoPage";
 
 import Login from "./components/Login";
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/job" element= {<Jobs/>} />
           <Route path="/postjobs" element= {<JobPostingForm />} />
           <Route path="/applyjob/:jobid/:userid" element= {<Jobapplyform />} />
+          <Route path="/tpopage" element= {<TpoPage/>} />
         </Routes>
       </Router>
     </div>

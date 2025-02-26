@@ -4,9 +4,11 @@ import Navbar from "./Navbar";
 import TrendingSection from "./TrendingSection";
 import StudentInternships from "./StudentInternships";
 import EmployerJobs from "./EmployerJobs";
+import TpoPage from "./TpoPage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import app from "../config/firebase-config";
+
 
 const MainPage = () => {
   const [user, setUser] = useState(null);
@@ -43,12 +45,14 @@ const MainPage = () => {
           <StudentInternships />
         ) : user.userType === "employee" ? (
           <EmployerJobs />
+        ) :  user.userType === "tpo"? (
+          <TpoPage />
         ) : (
           <TrendingSection />
         )
       ) : (
         <TrendingSection />
-      )}
+      )}
     </div>
   );
 };

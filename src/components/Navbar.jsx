@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import app from "../config/firebase-config";
 import { Link } from "react-router-dom";
+import logo from "../assets/SuvidhaLogo.png"
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -37,7 +38,7 @@ const Navbar = () => {
         className="w-28 h-8 bg-no-repeat bg-cover cursor-pointer"
         style={{
           backgroundImage:
-            "url(https://internshala.com/static/images/home/sprites/img-assets.png)",
+            `url(${logo})`,
           backgroundPosition: "0 0",
           backgroundSize: "254px",
         }}
