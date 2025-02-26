@@ -9,20 +9,25 @@ const Jobs = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const useBackend = import.meta.env.VITE_USE_BACKEND === "true";
+    console.log("VITE_USE_BACKEND:", useBackend);
+
     const fetchJobs = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/jobsfetch");
-        if (!response.ok) {
-          throw new Error("Failed to fetch jobs");
+        if (useBackend) {
+          const response = await fetch("http://localhost:5000/api/jobsfetch");
+          if (!response.ok) throw new Error("Failed to fetch jobs");
+          const data = await response.json();
+          const filteredJobs = data.filter((job) =>
+            ["Full-time", "Part-time", "Remote"].includes(job.job_type)
+          );
+          setJobListings(filteredJobs);
+          setFilteredJobs(filteredJobs);
+        } else {
+          console.log("Using mock jobs...");
+          setJobListings(mockJobs);
+          setFilteredJobs(mockJobs);
         }
-        const data = await response.json();
-
-        // Filter jobs with type "Full-time", "Part-time", or "Remote"
-        const filteredJobs = data.filter((job) =>
-          ["Full-time", "Part-time", "Remote"].includes(job.job_type)
-        );
-
-        setJobListings(filteredJobs);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -138,6 +143,42 @@ const Jobs = () => {
     "Nagpur",
     "Indore",
     "Thane",
+  ];
+
+  const mockJobs = [
+    {
+      id: 1,
+      job_title: "Software Engineer",
+      company_name: "TechCorp",
+      location: "Bangalore",
+      salary: 1200000,
+      job_type: "Full-time",
+      experience: "2",
+      created_at: "2024-02-15",
+      duration: "3",
+    },
+    {
+      id: 2,
+      job_title: "Marketing Manager",
+      company_name: "AdCom",
+      location: "Mumbai",
+      salary: 900000,
+      job_type: "Part-time",
+      experience: "3",
+      created_at: "2024-02-12",
+      duration: "3",
+    },
+    {
+      id: 3,
+      job_title: "Data Analyst",
+      company_name: "Analytics Hub",
+      location: "Remote",
+      salary: 1100000,
+      job_type: "Remote",
+      experience: "1",
+      created_at: "2024-02-18",
+      duration: "3",
+    },
   ];
 
   // Years of experience options for dropdown
@@ -295,8 +336,7 @@ const Jobs = () => {
                     {job.location}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Salary:</span> ₹
-                    {job.salary}
+                    <span className="font-semibold">Salary:</span> ₹{job.salary}
                   </p>
                   <p className="text-gray-600">
                     <span className="font-semibold">Duration:</span>{" "}

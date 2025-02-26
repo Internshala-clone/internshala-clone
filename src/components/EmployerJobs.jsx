@@ -4,53 +4,96 @@ import { auth } from "../config/firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 import axios from "axios";
 
+// Mock job data
+const mockJobListings = [
+  {
+    id: 1,
+    job_title: "Software Engineer",
+    company_name: "Tech Innovations",
+    job_type: "Full-time",
+    location: "Bangalore",
+    description: "Looking for a passionate software engineer with experience in React and Node.js.",
+  },
+  {
+    id: 2,
+    job_title: "Data Analyst",
+    company_name: "DataCorp",
+    job_type: "Remote",
+    location: "Mumbai",
+    description: "We need an experienced data analyst to handle business insights and reporting.",
+  },
+  {
+    id: 3,
+    job_title: "Marketing Manager",
+    company_name: "AdGrowth",
+    job_type: "Part-time",
+    location: "Delhi",
+    description: "Seeking a creative marketing manager to lead our advertising strategies.",
+  },
+];
+
+const mockUser = {
+  id: "mockUser123",
+  email: "mock@user.com",
+  name: "John Doe",
+};
+
 const EmployerJobs = () => {
   const [jobListings, setJobListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        console.log("Firebase User:", user);
-        try {
-          // Fetch user from PostgreSQL using Firebase UID
-          const response = await axios.get(`http://localhost:5000/api/user?email=${user.email}`);
-          setCurrentUser(response.data); // Store user details
-        } catch (err) {
-          console.error("Error fetching user from PostgreSQL:", err);
-          setError("Failed to load user data");
-        }
-      }
-    });
+  const USE_MOCK_DATA = true; // Change to false to fetch real data
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+  useEffect(() => {
+    if (USE_MOCK_DATA) {
+      setCurrentUser(mockUser);
+    } else {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          console.log("Firebase User:", user);
+          try {
+            const response = await axios.get(
+              `http://localhost:5000/api/user?email=${user.email}`
+            );
+            setCurrentUser(response.data);
+          } catch (err) {
+            console.error("Error fetching user from PostgreSQL:", err);
+            setError("Failed to load user data");
+          }
+        }
+      });
+
+      return () => unsubscribe();
+    }
   }, []);
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/jobsfetch");
-        if (!response.ok) {
-          throw new Error("Failed to fetch jobs");
+    if (USE_MOCK_DATA) {
+      setJobListings(mockJobListings);
+      setLoading(false);
+    } else {
+      const fetchJobs = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/api/jobsfetch");
+          if (!response.ok) {
+            throw new Error("Failed to fetch jobs");
+          }
+          const data = await response.json();
+          const filteredJobs = data.filter((job) =>
+            ["Full-time", "Part-time", "Remote"].includes(job.job_type)
+          );
+          setJobListings(filteredJobs);
+        } catch (error) {
+          setError(error.message);
+        } finally {
+          setLoading(false);
         }
-        const data = await response.json();
-        
-        // Filter jobs with type "Full-time", "Part-time", or "Remote"
-        const filteredJobs = data.filter(job => 
-          ["Full-time", "Part-time", "Remote"].includes(job.job_type)
-        );
+      };
 
-        setJobListings(filteredJobs);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchJobs();
+      fetchJobs();
+    }
   }, []);
 
   return (
@@ -81,14 +124,11 @@ const EmployerJobs = () => {
             <p className="text-sm text-gray-600 mt-2">{job.description}</p>
             <div className="mt-4 flex justify-between items-center">
               <span className="text-gray-800 font-medium">{job.location}</span>
-              <Link to={`/applyjob/${job.id}/${currentUser?.id || "guest"}`}><a
-                href={job.link || "#"}
-                className="text-indigo-600 font-bold hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Apply Now
-              </a></Link>
+              <Link to={`/applyjob/${job.id}/${currentUser?.id || "guest"}`}>
+                <button className="text-indigo-600 font-bold hover:underline">
+                  Apply Now
+                </button>
+              </Link>
             </div>
           </div>
         ))}

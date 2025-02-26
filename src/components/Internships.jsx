@@ -24,19 +24,71 @@ const Internships = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const mockInternships = [
+    {
+      id: 1,
+      job_title: "Software Development Intern",
+      company_name: "TechCorp",
+      location: "Bangalore",
+      salary: 10000,
+      duration: 6,
+      job_type: "Internship",
+      created_at: "2024-02-10",
+    },
+    {
+      id: 2,
+      job_title: "Marketing Intern",
+      company_name: "AdCom",
+      location: "Mumbai",
+      salary: 8000,
+      duration: 4,
+      job_type: "Internship",
+      created_at: "2024-02-15",
+    },
+    {
+      id: 3,
+      job_title: "Graphic Design Intern",
+      company_name: "Creative Minds",
+      location: "Remote",
+      salary: 7000,
+      duration: 3,
+      job_type: "Internship",
+      created_at: "2024-02-18",
+    },
+    {
+      id: 4,
+      job_title: "Data Science Intern",
+      company_name: "AI Labs",
+      location: "Hyderabad",
+      salary: 12000,
+      duration: 6,
+      job_type: "Internship",
+      created_at: "2024-02-20",
+    },
+  ];
+
   // Fetch internships from backend
   useEffect(() => {
+    const useBackend = import.meta.env.VITE_USE_BACKEND === "true";
+    console.log("VITE_USE_BACKEND:", useBackend);
+
     const fetchInternships = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/jobsfetch");
-        if (!response.ok) throw new Error("Failed to fetch internships");
+        if (useBackend) {
+          const response = await fetch("http://localhost:5000/api/jobsfetch");
+          if (!response.ok) throw new Error("Failed to fetch internships");
 
-        const data = await response.json();
-        const filteredInternships = data.filter(
-          (job) => job.job_type === "Internship"
-        );
-        setInternships(filteredInternships);
-        setFilteredInternships(filteredInternships);
+          const data = await response.json();
+          const filteredData = data.filter(
+            (job) => job.job_type === "Internship"
+          );
+          setInternships(filteredData);
+          setFilteredInternships(filteredData);
+        } else {
+          console.log("Using mock internships...");
+          setInternships(mockInternships);
+          setFilteredInternships(mockInternships);
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -164,8 +216,6 @@ const Internships = () => {
     <div>
       <Navbar />
       <div className="p-6 max-w-7xl mx-auto mt-20">
-        
-
         <div className="mb-6">
           <h2 className="text-2xl font-bold">
             {filteredInternships.length} Internships
