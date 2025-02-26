@@ -5,7 +5,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import app from "../config/firebase-config";
 import { Link } from "react-router-dom";
-import logo from "../assets/SuvidhaLogo.png"
+import logo from "../assets/SuvidhaLogo.png";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -33,34 +33,44 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 w-full h-20 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-between px-24 shadow-md z-50">
-      <Link to="/"><div
-        className="w-28 h-8 bg-no-repeat bg-cover cursor-pointer"
-        style={{
-          backgroundImage:
-            `url(${logo})`,
-          backgroundPosition: "0 0",
-          backgroundSize: "254px",
-        }}
-      ></div></Link>
+    <div className="relative w-full h-20 bg-gray-800 flex items-center justify-between px-24 shadow-md z-50">
+      {/* Logo */}
+      <Link to="/">
+        <div
+          className="w-28 h-8 bg-no-repeat bg-cover cursor-pointer"
+          style={{
+            backgroundImage: `url(${logo})`,
+            backgroundPosition: "0 0",
+            backgroundSize: "254px",
+          }}
+        ></div>
+      </Link>
 
+      {/* Navigation Links */}
       <div className="flex space-x-6 text-white font-semibold">
-        <Link to="/internship" className="hover:text-yellow-300 cursor-pointer">Internships</Link>
-        <Link to="/job" className="hover:text-yellow-300 cursor-pointer">Jobs</Link>
-        <div className="hover:text-yellow-300 cursor-pointer">Courses</div>
+        <Link to="/internship" className="hover:text-orange-500 cursor-pointer">
+          Internships
+        </Link>
+        <Link to="/job" className="hover:text-orange-500 cursor-pointer">
+          Jobs
+        </Link>
+        <div className="hover:text-orange-500 cursor-pointer">Courses</div>
       </div>
 
+      {/* Search and User Actions */}
       <div className="flex items-center space-x-4">
-        <div className="flex items-center text-white cursor-pointer hover:text-yellow-300">
+        {/* Search Icon */}
+        <div className="flex items-center text-white cursor-pointer hover:text-orange-500">
           <MdSearch size={20} />
           <span className="ml-1">Search</span>
         </div>
 
+        {/* User Actions */}
         {user ? (
           <div className="flex items-center">
-            <span className="font-bold text-yellow-300 mr-4">{user.firstName}</span>
+            <span className="font-bold text-orange-500 mr-4">{user.firstName}</span>
             <button
-              className="px-4 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-gray-900 font-bold"
+              className="px-4 py-2 border border-white rounded text-white hover:bg-orange-500 hover:text-white font-bold transition-colors"
               onClick={handleLogout}
             >
               Logout
@@ -69,14 +79,29 @@ const Navbar = () => {
         ) : (
           <>
             <div
-              className="px-4 py-2 border border-white rounded text-white hover:bg-yellow-300 hover:text-gray-900 font-bold cursor-pointer"
+              className="px-4 py-2 border border-white rounded text-white hover:bg-orange-500 hover:text-white font-bold cursor-pointer transition-colors"
               onClick={handleLoginClick}
             >
               Login
             </div>
-            <Link to="/studentsignup" className="btn-yellow">Candidate Sign-up</Link>
-            <Link to="/employeesignup" className="btn-yellow">Employer Sign-up</Link>
-            <Link to="/tposignup" className="btn-yellow">TPO Sign-up</Link>
+            <Link
+              to="/studentsignup"
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 font-bold transition-colors"
+            >
+              Candidate Sign-up
+            </Link>
+            <Link
+              to="/employeesignup"
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 font-bold transition-colors"
+            >
+              Employer Sign-up
+            </Link>
+            <Link
+              to="/tposignup"
+              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 font-bold transition-colors"
+            >
+              TPO Sign-up
+            </Link>
           </>
         )}
       </div>

@@ -101,9 +101,11 @@ const EmployeeSignup = () => {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-50">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">Official Email Id</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">
+          Official Email Id
+        </h2>
         {error && <p className="text-red-500 text-center mb-3">{error}</p>}
 
         <form onSubmit={signUp}>
@@ -113,60 +115,68 @@ const EmployeeSignup = () => {
             placeholder="name@company.com"
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             required
           />
 
-          <h2 className="text-lg font-semibold mb-2">Password</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Password</h2>
           <input
             type="password"
             name="password"
             placeholder="Minimum 6 characters"
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             required
           />
 
-          <h2 className="text-lg font-semibold mb-2">Confirm Password</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            Confirm Password
+          </h2>
           <input
             type="password"
             name="confirmPassword"
             placeholder="Re-enter your password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
             required
           />
 
           <div className="flex gap-3">
             <div className="w-1/2">
-              <h2 className="text-lg font-semibold mb-2">First Name</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                First Name
+              </h2>
               <input
                 type="text"
                 name="firstName"
                 placeholder="Your First Name"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
             <div className="w-1/2">
-              <h2 className="text-lg font-semibold mb-2">Last Name</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                Last Name
+              </h2>
               <input
                 type="text"
                 name="lastName"
                 placeholder="Your Last Name"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
           </div>
 
-          <h2 className="text-lg font-semibold mb-2">Mobile Number</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            Mobile Number
+          </h2>
           <div className="flex gap-3">
             <input
               type="text"
@@ -180,7 +190,7 @@ const EmployeeSignup = () => {
               placeholder="Enter mobile number"
               value={formData.mobile}
               onChange={handleChange}
-              className="w-4/5 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-4/5 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -188,12 +198,14 @@ const EmployeeSignup = () => {
           <p className="text-sm text-gray-600 mt-3">
             By clicking on <span className="font-bold">Post for Free</span>, you
             agree to our{" "}
-            <span className="text-blue-500 cursor-pointer">T&C.</span>
+            <span className="text-orange-500 cursor-pointer hover:underline">
+              T&C.
+            </span>
           </p>
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 rounded-md mt-4 hover:bg-blue-600"
+            className="w-full bg-orange-500 text-white font-bold py-2 rounded-md mt-4 hover:bg-orange-600 transition-colors"
             disabled={loading}
           >
             {loading ? "Processing..." : "Post for Free"}
@@ -202,7 +214,7 @@ const EmployeeSignup = () => {
 
         <p className="text-center text-gray-600 mt-4">
           Already registered?{" "}
-          <Link to="/login" className="text-blue-500">
+          <Link to="/login" className="text-orange-500 hover:underline">
             Login
           </Link>
         </p>

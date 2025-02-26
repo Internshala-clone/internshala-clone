@@ -86,10 +86,10 @@ const StudentSignup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-sky-100">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-2">
-          Sign-up and apply <span className="text-blue-500">for free</span>
+        <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
+          Sign-up and apply <span className="text-orange-500">for free</span>
         </h2>
         <p className="text-center text-gray-600 mb-6">
           1,50,000+ companies hiring on Internshala
@@ -99,7 +99,7 @@ const StudentSignup = () => {
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         {/* Google Signup Button */}
-        <button className="w-full flex items-center justify-center gap-2 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 font-medium mb-4 hover:bg-gray-100">
+        <button className="w-full flex items-center justify-center gap-2 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 font-medium mb-4 hover:bg-gray-100 transition-colors">
           <img
             src="https://tse1.mm.bing.net/th?id=OIP.AfKMLf4rKX7EqOSAVpujIQHaEK&pid=Api&P=0&h=180"
             alt="Google logo"
@@ -124,7 +124,7 @@ const StudentSignup = () => {
               placeholder="john@example.com"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -137,7 +137,7 @@ const StudentSignup = () => {
               placeholder="Must be at least 6 characters"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -152,7 +152,7 @@ const StudentSignup = () => {
               placeholder="Re-enter your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
@@ -168,7 +168,7 @@ const StudentSignup = () => {
                 placeholder="John"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
@@ -182,7 +182,7 @@ const StudentSignup = () => {
                 placeholder="Doe"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
@@ -198,14 +198,14 @@ const StudentSignup = () => {
               placeholder="Enter mobile number"
               value={formData.mobile}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               required
             />
           </div>
 
           <p className="text-xs text-gray-600 text-center">
             By signing up, you agree to our{" "}
-            <a href="#" className="text-blue-500">
+            <a href="#" className="text-orange-500 hover:underline">
               Terms and Conditions
             </a>
             .
@@ -213,7 +213,7 @@ const StudentSignup = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600 transition-colors"
             disabled={loading}
           >
             {loading ? "Signing Up..." : "Sign Up"}
@@ -222,7 +222,7 @@ const StudentSignup = () => {
 
         <p className="text-center text-gray-600 mt-4">
           Already registered?{" "}
-          <Link to="/login" className="text-blue-500">
+          <Link to="/login" className="text-orange-500 hover:underline">
             Login
           </Link>
         </p>

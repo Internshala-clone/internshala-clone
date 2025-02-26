@@ -190,7 +190,7 @@ const Jobs = () => {
       <div className="p-6 max-w-7xl mx-auto mt-20">
         {/* Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-2xl font-bold text-gray-900">
             {filteredJobs.length} Jobs Found
           </h2>
           <p className="text-gray-600">
@@ -201,7 +201,7 @@ const Jobs = () => {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters */}
           <div className="w-full md:w-1/4 bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-4">Filters</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">Filters</h3>
 
             {/* Profile Dropdown */}
             <div className="mb-4">
@@ -212,7 +212,7 @@ const Jobs = () => {
                 name="profile"
                 value={filters.profile}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Select Profile</option>
                 {profileOptions.map((option, index) => (
@@ -232,7 +232,7 @@ const Jobs = () => {
                 name="location"
                 value={filters.location}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Select Location</option>
                 {popularCities.map((city, index) => (
@@ -250,7 +250,7 @@ const Jobs = () => {
                 name="workFromHome"
                 checked={filters.workFromHome}
                 onChange={handleChange}
-                className="mr-2"
+                className="mr-2 accent-orange-500"
               />
               Work from home
             </label>
@@ -260,7 +260,7 @@ const Jobs = () => {
                 name="partTime"
                 checked={filters.partTime}
                 onChange={handleChange}
-                className="mr-2"
+                className="mr-2 accent-orange-500"
               />
               Part-time
             </label>
@@ -278,7 +278,7 @@ const Jobs = () => {
                 step="1"
                 value={filters.salary}
                 onChange={handleChange}
-                className="w-full"
+                className="w-full accent-orange-500"
               />
               <span>{filters.salary} LPA</span>
             </div>
@@ -292,7 +292,7 @@ const Jobs = () => {
                 name="yearsOfExperience"
                 value={filters.yearsOfExperience}
                 onChange={handleChange}
-                className="w-full border p-2 rounded"
+                className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">Select</option>
                 {yearsOfExperienceOptions.map((option, index) => (
@@ -315,7 +315,7 @@ const Jobs = () => {
                   yearsOfExperience: "",
                 })
               }
-              className="text-blue-500 hover:text-blue-700 text-sm"
+              className="text-orange-500 hover:text-orange-700 text-sm"
             >
               Clear Filters
             </button>
@@ -328,7 +328,9 @@ const Jobs = () => {
                 key={job.id}
                 className="bg-white p-6 rounded-lg shadow-md mb-4"
               >
-                <h3 className="text-xl font-semibold">{job.job_title}</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {job.job_title}
+                </h3>
                 <p className="text-gray-600">{job.company_name}</p>
                 <div className="flex flex-wrap gap-4 mt-2">
                   <p className="text-gray-600">
@@ -351,7 +353,7 @@ const Jobs = () => {
                     })}
                   </p>
                 </div>
-                <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                <button className="mt-4 bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                   Apply Now
                 </button>
               </div>
