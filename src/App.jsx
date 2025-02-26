@@ -7,6 +7,7 @@ import EmployeeSignup from "./components/EmployeeSignup";
 import TpoSignup from "./components/TpoSignup";
 import Internships from "./components/Internships";
 import Jobs from "./components/Jobs";
+import JobPostingForm from "./components/JobPostingForm";
 
 import Login from "./components/Login";
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/" element={<MainPage />} />
           <Route path="/internship" element= {<Internships/>} />
           <Route path="/job" element= {<Jobs/>} />
+          <Route path="/postjobs" element= {<JobPostingForm />} />
         </Routes>
       </Router>
     </div>

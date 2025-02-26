@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
 
 const Jobs = () => {
   const [filters, setFilters] = useState({
@@ -97,7 +98,9 @@ const Jobs = () => {
   ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div>
+      <Navbar />
+    <div className="p-6 max-w-7xl mx-auto mt-20">
       {/* Breadcrumb Navigation */}
       <div className="text-sm text-gray-600 mb-4">
         <Link to="/" className="hover:text-blue-500 cursor-pointer">Home</Link> &gt;{" "}
@@ -309,6 +312,7 @@ const Jobs = () => {
           Next
         </button>
       </div>
+    </div>
     </div>
   );
 };
