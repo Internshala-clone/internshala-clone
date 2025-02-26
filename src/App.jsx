@@ -8,6 +8,7 @@ import TpoSignup from "./components/TpoSignup";
 import Internships from "./components/Internships";
 import Jobs from "./components/Jobs";
 import JobPostingForm from "./components/JobPostingForm";
+import Jobapplyform from "./components/Jobapplyform";
 
 import Login from "./components/Login";
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/internship" element= {<Internships/>} />
           <Route path="/job" element= {<Jobs/>} />
           <Route path="/postjobs" element= {<JobPostingForm />} />
+          <Route path="/applyjob/:jobid/:userid" element= {<Jobapplyform />} />
         </Routes>
       </Router>
     </div>

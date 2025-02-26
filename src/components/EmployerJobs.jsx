@@ -1,10 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { auth } from "../config/firebase-config";
+import { onAuthStateChanged } from "firebase/auth";
+import axios from "axios";
 
 const EmployerJobs = () => {
   const [jobListings, setJobListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log("Firebase User:", user);
+        try {
+          // Fetch user from PostgreSQL using Firebase UID
+          const response = await axios.get(`http://localhost:5000/api/user?email=${user.email}`);
+          setCurrentUser(response.data); // Store user details
+        } catch (err) {
+          console.error("Error fetching user from PostgreSQL:", err);
+          setError("Failed to load user data");
+        }
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, []);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -59,14 +81,14 @@ const EmployerJobs = () => {
             <p className="text-sm text-gray-600 mt-2">{job.description}</p>
             <div className="mt-4 flex justify-between items-center">
               <span className="text-gray-800 font-medium">{job.location}</span>
-              <a
+              <Link to={`/applyjob/${job.id}/${currentUser?.id || "guest"}`}><a
                 href={job.link || "#"}
                 className="text-indigo-600 font-bold hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Apply Now
-              </a>
+              </a></Link>
             </div>
           </div>
         ))}
