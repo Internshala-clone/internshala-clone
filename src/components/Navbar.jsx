@@ -33,7 +33,7 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-20 bg-gradient-to-r from-blue-600 to-purple-700 flex items-center justify-between px-24 shadow-md z-50">
-      <div
+      <Link to="/"><div
         className="w-28 h-8 bg-no-repeat bg-cover cursor-pointer"
         style={{
           backgroundImage:
@@ -41,7 +41,7 @@ const Navbar = () => {
           backgroundPosition: "0 0",
           backgroundSize: "254px",
         }}
-      ></div>
+      ></div></Link>
 
       <div className="flex space-x-6 text-white font-semibold">
         <Link to="/internship" className="hover:text-yellow-300 cursor-pointer">Internships</Link>

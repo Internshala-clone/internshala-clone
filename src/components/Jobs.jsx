@@ -1,18 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const Jobs = () => {
+  const [jobListings, setJobListings] = useState([]);
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/jobsfetch");
+        if (!response.ok) {
+          throw new Error("Failed to fetch jobs");
+        }
+        const data = await response.json();
+
+        // Filter jobs with type "Full-time", "Part-time", or "Remote"
+        const filteredJobs = data.filter((job) =>
+          ["Full-time", "Part-time", "Remote"].includes(job.job_type)
+        );
+
+        setJobListings(filteredJobs);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
   const [filters, setFilters] = useState({
     profile: "",
     location: "",
     workFromHome: false,
     partTime: false,
-    salary: 0, // Yearly salary in lakhs
-    yearsOfExperience: "", // Years of experience
+    salary: 0, // Annual salary in lakhs
+    yearsOfExperience: "",
   });
 
-  const [keyword, setKeyword] = useState(""); // State for keyword search
+  const [keyword, setKeyword] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,6 +51,61 @@ const Jobs = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
+  // **Filter Jobs When Filters Change**
+  useEffect(() => {
+    let filtered = jobListings;
+
+    // **Profile Filter**
+    if (filters.profile) {
+      filtered = filtered.filter((job) =>
+        job.job_title.toLowerCase().includes(filters.profile.toLowerCase())
+      );
+    }
+
+    // **Location Filter**
+    if (filters.location) {
+      filtered = filtered.filter(
+        (job) => job.location.toLowerCase() === filters.location.toLowerCase()
+      );
+    }
+
+    // **Work from Home Filter**
+    if (filters.workFromHome) {
+      filtered = filtered.filter((job) => job.job_type === "Remote");
+    }
+
+    // **Part-time Filter**
+    if (filters.partTime) {
+      filtered = filtered.filter((job) => job.job_type === "Part-time");
+    }
+
+    // **Salary Filter (Lakhs Per Annum)**
+    if (filters.salary > 0) {
+      filtered = filtered.filter(
+        (job) => job.salary >= filters.salary * 100000
+      );
+    }
+
+    // **Experience Filter**
+    if (filters.yearsOfExperience) {
+      filtered = filtered.filter(
+        (job) => job.experience === filters.yearsOfExperience
+      );
+    }
+
+    // **Keyword Search**
+    if (keyword) {
+      filtered = filtered.filter(
+        (job) =>
+          job.job_title.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.company_name.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.location.toLowerCase().includes(keyword.toLowerCase())
+      );
+    }
+
+    setFilteredJobs(filtered);
+  }, [filters, keyword, jobListings]);
 
   // Profile options for dropdown
   const profileOptions = [
@@ -56,76 +141,30 @@ const Jobs = () => {
   ];
 
   // Years of experience options for dropdown
-  const yearsOfExperienceOptions = [
-    "Fresher",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "5+",
-  ];
-
-  // Dummy data for jobs
-  const jobs = [
-    {
-      id: 1,
-      company: "Swipe (Actively hiring)",
-      profile: "Client Service Associate",
-      location: "Hyderabad",
-      salary: "₹3,00,000 - ₹6,00,000",
-      yearsOfExperience: "1 year(s)",
-      postedOn: "1 day ago",
-    },
-    {
-      id: 2,
-      company: "Swipe (Actively hiring)",
-      profile: "Business Development Specialist",
-      location: "Hyderabad",
-      salary: "₹4,00,000 - ₹7,00,000",
-      yearsOfExperience: "1 year(s)",
-      postedOn: "1 day ago",
-    },
-    {
-      id: 3,
-      company: "Tech Corp",
-      profile: "Software Engineer",
-      location: "Remote",
-      salary: "₹6,00,000 - ₹10,00,000",
-      yearsOfExperience: "2 years",
-      postedOn: "2 days ago",
-    },
-  ];
+  const yearsOfExperienceOptions = ["Fresher", "1", "2", "3", "4", "5", "5+"];
 
   return (
     <div>
       <Navbar />
-    <div className="p-6 max-w-7xl mx-auto mt-20">
-      {/* Breadcrumb Navigation */}
-      <div className="text-sm text-gray-600 mb-4">
-        <Link to="/" className="hover:text-blue-500 cursor-pointer">Home</Link> &gt;{" "}
-        <span className="text-blue-500">Jobs</span>
-      </div>
+      <div className="p-6 max-w-7xl mx-auto mt-20">
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold">
+            {filteredJobs.length} Jobs Found
+          </h2>
+          <p className="text-gray-600">
+            Search and Apply to Latest Job Vacancies in India
+          </p>
+        </div>
 
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold">7640 Jobs</h2>
-        <p className="text-gray-600">
-          Search and Apply to Latest Job Vacancies & Openings in India
-        </p>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Filters Section */}
-        <div className="w-full md:w-1/4">
-          {/* Filters Card */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Filters */}
+          <div className="w-full md:w-1/4 bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-4">Filters</h3>
 
             {/* Profile Dropdown */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Profile
               </label>
               <select
@@ -145,7 +184,7 @@ const Jobs = () => {
 
             {/* Location Dropdown */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Location
               </label>
               <select
@@ -163,7 +202,7 @@ const Jobs = () => {
               </select>
             </div>
 
-            {/* Work from Home and Part-time Filters */}
+            {/* Work from Home & Part-time */}
             <label className="flex items-center mb-2">
               <input
                 type="checkbox"
@@ -185,35 +224,28 @@ const Jobs = () => {
               Part-time
             </label>
 
-            {/* Yearly Salary Range Slider */}
+            {/* Salary Filter */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700">
                 Annual salary (in lakhs)
               </label>
               <input
                 type="range"
                 name="salary"
                 min="0"
-                max="10"
+                max="20"
                 step="1"
                 value={filters.salary}
                 onChange={handleChange}
                 className="w-full"
               />
-              <div className="flex justify-between text-sm text-gray-600 mt-1">
-                <span>0</span>
-                <span>2</span>
-                <span>4</span>
-                <span>6</span>
-                <span>8</span>
-                <span>10</span>
-              </div>
+              <span>{filters.salary} LPA</span>
             </div>
 
-            {/* Years of Experience Dropdown */}
+            {/* Experience Filter */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Years of experience
+              <label className="block text-sm font-medium text-gray-700">
+                Years of Experience
               </label>
               <select
                 name="yearsOfExperience"
@@ -221,7 +253,7 @@ const Jobs = () => {
                 onChange={handleChange}
                 className="w-full border p-2 rounded"
               >
-                <option value="">Select years of experience</option>
+                <option value="">Select</option>
                 {yearsOfExperienceOptions.map((option, index) => (
                   <option key={index} value={option}>
                     {option}
@@ -230,89 +262,63 @@ const Jobs = () => {
               </select>
             </div>
 
-            {/* Clear All Button */}
-            <div className="flex justify-end mt-8">
-              <button
-                onClick={() => setFilters({
+            {/* Clear Filters Button */}
+            <button
+              onClick={() =>
+                setFilters({
                   profile: "",
                   location: "",
                   workFromHome: false,
                   partTime: false,
                   salary: 0,
                   yearsOfExperience: "",
-                })}
-                className="text-blue-500 hover:text-blue-700 text-sm"
-              >
-                Clear all
-              </button>
-            </div>
-          </div>
-
-          {/* Keyword Search Section */}
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Keyword Search
-            </label>
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="e.g. Design, Mumbai, Infosys"
-              className="w-full border p-2 rounded"
-            />
-          </div>
-        </div>
-
-        {/* Job Listings */}
-        <div className="w-full md:w-3/4">
-          {jobs.map((job) => (
-            <div
-              key={job.id}
-              className="bg-white p-6 rounded-lg shadow-md mb-4"
+                })
+              }
+              className="text-blue-500 hover:text-blue-700 text-sm"
             >
-              <h3 className="text-xl font-semibold">{job.profile}</h3>
-              <p className="text-gray-600">{job.company}</p>
-              <div className="flex flex-wrap gap-4 mt-2">
-                <p className="text-gray-600">
-                  <span className="font-semibold">Location:</span>{" "}
-                  {job.location}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Salary:</span> {job.salary}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Experience:</span>{" "}
-                  {job.yearsOfExperience}
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">Posted On:</span>{" "}
-                  {job.postedOn}
-                </p>
+              Clear Filters
+            </button>
+          </div>
+
+          {/* Job Listings */}
+          <div className="w-full md:w-3/4">
+            {filteredJobs.map((job) => (
+              <div
+                key={job.id}
+                className="bg-white p-6 rounded-lg shadow-md mb-4"
+              >
+                <h3 className="text-xl font-semibold">{job.job_title}</h3>
+                <p className="text-gray-600">{job.company_name}</p>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Location:</span>{" "}
+                    {job.location}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Salary:</span> ₹
+                    {job.salary}
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Duration:</span>{" "}
+                    {job.duration} Month/s
+                  </p>
+                  <p className="text-gray-600">
+                    <span className="font-semibold">Posted On:</span>{" "}
+                    {new Date(job.created_at).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+                <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                  Apply Now
+                </button>
               </div>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Apply Now
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-          1
-        </button>
-        <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-          2
-        </button>
-        <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-          3
-        </button>
-        <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-          Next
-        </button>
-      </div>
-    </div>
     </div>
   );
 };

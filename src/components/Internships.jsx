@@ -18,10 +18,96 @@ const Internships = () => {
   });
 
   const [internships, setInternships] = useState([]);
+  const [filteredInternships, setFilteredInternships] = useState([]); // Store filtered data
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [showMoreFilters, setShowMoreFilters] = useState(false); // Toggle for more filters
-  const [keyword, setKeyword] = useState(""); // State for keyword search
+  // Fetch internships from backend
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/jobsfetch");
+        if (!response.ok) throw new Error("Failed to fetch internships");
 
+        const data = await response.json();
+        const filteredInternships = data.filter(
+          (job) => job.job_type === "Internship"
+        );
+        setInternships(filteredInternships);
+        setFilteredInternships(filteredInternships);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInternships();
+  }, []);
+
+  // Apply filters whenever they change
+  useEffect(() => {
+    let result = internships;
+
+    // Profile filter
+    if (filters.profile) {
+      result = result.filter((job) =>
+        job.job_title.toLowerCase().includes(filters.profile.toLowerCase())
+      );
+    }
+
+    // Location filter
+    if (filters.location) {
+      result = result.filter((job) =>
+        job.location.toLowerCase().includes(filters.location.toLowerCase())
+      );
+    }
+
+    // Work from home filter
+    if (filters.workFromHome) {
+      result = result.filter((job) => job.location.toLowerCase() === "remote");
+    }
+
+    // Part-time filter
+    if (filters.partTime) {
+      result = result.filter((job) => job.part_time === true);
+    }
+
+    // Stipend filter
+    if (filters.stipend > 0) {
+      result = result.filter((job) => job.salary >= filters.stipend);
+    }
+
+    // Start date filter
+    if (filters.startDate) {
+      result = result.filter(
+        (job) => new Date(job.start_date) >= new Date(filters.startDate)
+      );
+    }
+
+    // Duration filter
+    if (filters.duration) {
+      result = result.filter(
+        (job) => job.duration.toString() === filters.duration
+      );
+    }
+
+    // Keyword search
+    if (keyword) {
+      result = result.filter(
+        (job) =>
+          job.job_title.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.company_name.toLowerCase().includes(keyword.toLowerCase()) ||
+          job.location.toLowerCase().includes(keyword.toLowerCase())
+      );
+    }
+
+    setFilteredInternships(result);
+  }, [filters, keyword, internships]);
+
+  // Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFilters((prevFilters) => ({
@@ -74,83 +160,21 @@ const Internships = () => {
   // Duration options for dropdown
   const durationOptions = ["4 Months", "6 Months", "12 Months"];
 
-  // Dummy data for internships
-  // const internships = [
-  //   {
-  //     id: 1,
-  //     company: "Tech Corp",
-  //     profile: "Web Development Intern",
-  //     location: "Remote",
-  //     stipend: "₹5,000 /month",
-  //     duration: "2 Months",
-  //     postedOn: "2 days ago",
-  //   },
-  //   {
-  //     id: 2,
-  //     company: "Design Studio",
-  //     profile: "Graphic Design Intern",
-  //     location: "Mumbai",
-  //     stipend: "₹8,000 /month",
-  //     duration: "3 Months",
-  //     postedOn: "5 days ago",
-  //   },
-  //   {
-  //     id: 3,
-  //     company: "Marketing Agency",
-  //     profile: "Digital Marketing Intern",
-  //     location: "Delhi",
-  //     stipend: "₹6,000 /month",
-  //     duration: "1 Month",
-  //     postedOn: "1 week ago",
-  //   },
-  //];
-
-  useEffect(() => {
-    const fetchInternships = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/jobsfetch");
-        if (!response.ok) {
-          throw new Error("Failed to fetch internships");
-        }
-        const data = await response.json();
-
-        // Filter internships where jobType is "Internship"
-        const filteredInternships = data.filter(
-          (job) => job.job_type === "Internship"
-        );
-
-        setInternships(filteredInternships);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInternships();
-  }, []);
-
   return (
     <div>
       <Navbar />
       <div className="p-6 max-w-7xl mx-auto mt-20">
-        {/*<Navbar /> */}
-        {/* Breadcrumb Navigation */}
-        <div className="text-sm text-gray-600 mb-4">
-          <Link to="/" className="hover:text-blue-500 cursor-pointer">
-            Home
-          </Link>{" "}
-          &gt; <span className="text-blue-500">Internships</span>
-        </div>
+        
 
-        {/* Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">10172 Total Internships</h2>
+          <h2 className="text-2xl font-bold">
+            {filteredInternships.length} Internships
+          </h2>
           <p className="text-gray-600">Latest Summer Internships in India</p>
         </div>
 
-        {/* Main Content */}
         <div className="flex flex-col md:flex-row gap-6">
+          {/* Filters */}
           {/* Filters Section */}
           <div className="w-full md:w-1/4">
             {/* Filters Card */}
@@ -384,7 +408,7 @@ const Internships = () => {
 
           {/* Internship Listings */}
           <div className="w-full md:w-3/4">
-            {internships.map((internship) => (
+            {filteredInternships.map((internship) => (
               <div
                 key={internship.id}
                 className="bg-white p-6 rounded-lg shadow-md mb-4"
@@ -399,8 +423,8 @@ const Internships = () => {
                     {internship.location}
                   </p>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Stipend:</span>{" "}
-                    ₹{internship.salary}
+                    <span className="font-semibold">Stipend:</span> ₹
+                    {internship.salary}
                   </p>
                   <p className="text-gray-600">
                     <span className="font-semibold">Duration:</span>{" "}
@@ -424,22 +448,6 @@ const Internships = () => {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-center mt-6">
-          <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-            1
-          </button>
-          <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-            2
-          </button>
-          <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-            3
-          </button>
-          <button className="mx-1 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-            Next
-          </button>
         </div>
       </div>
     </div>
