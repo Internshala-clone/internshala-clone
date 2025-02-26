@@ -8,7 +8,7 @@ const Internships = () => {
     location: "",
     workFromHome: false,
     partTime: false,
-    stipend: 0, // Stipend range
+    salary: 0, // Stipend range
     startDate: "",
     duration: "",
     jobOffer: false,
@@ -127,9 +127,10 @@ const Internships = () => {
       result = result.filter((job) => job.part_time === true);
     }
 
-    // Stipend filter
-    if (filters.stipend > 0) {
-      result = result.filter((job) => job.salary >= filters.stipend);
+    if (filters.salary > 0) {
+      console.log(filters.salary)
+      result = result.filter((job) => job.salary >= filters.salary * 10);
+      console.log(result);
     }
 
     // Start date filter
@@ -164,7 +165,12 @@ const Internships = () => {
     const { name, value, type, checked } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "range"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -305,11 +311,11 @@ const Internships = () => {
                 </label>
                 <input
                   type="range"
-                  name="stipend"
+                  name="salary"
                   min="0"
-                  max="10000"
-                  step="1000"
-                  value={filters.stipend}
+                  max="1000"
+                  step="100"
+                  value={filters.salary}
                   onChange={handleChange}
                   className="w-full accent-orange-500"
                 />
@@ -426,7 +432,7 @@ const Internships = () => {
                       location: "",
                       workFromHome: false,
                       partTime: false,
-                      stipend: 0,
+                      salary: 0,
                       startDate: "",
                       duration: "",
                       jobOffer: false,

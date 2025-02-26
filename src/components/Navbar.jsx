@@ -9,6 +9,7 @@ import logo from "../assets/SuvidhaLogo.png";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
   const auth = getAuth(app);
@@ -33,7 +34,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="relative w-full h-20 bg-gray-800 flex items-center justify-between px-24 shadow-md z-50">
+    <div className="fixed top-0 left-0 w-full h-20 bg-gray-800 flex items-center justify-between px-24 shadow-md">
       {/* Logo */}
       <Link to="/">
         <div
@@ -58,23 +59,49 @@ const Navbar = () => {
       </div>
 
       {/* Search and User Actions */}
-      <div className="flex items-center space-x-4">
-        {/* Search Icon */}
-        <div className="flex items-center text-white cursor-pointer hover:text-orange-500">
-          <MdSearch size={20} />
-          <span className="ml-1">Search</span>
-        </div>
-
+      <div className="flex items-center space-x-4 relative">
         {/* User Actions */}
         {user ? (
-          <div className="flex items-center">
-            <span className="font-bold text-orange-500 mr-4">{user.firstName}</span>
-            <button
-              className="px-4 py-2 border border-white rounded text-white hover:bg-orange-500 hover:text-white font-bold transition-colors"
-              onClick={handleLogout}
+          <div className="relative">
+            <span
+              className="font-bold text-orange-500 cursor-pointer"
+              onMouseEnter={() => setShowPopup(true)}
             >
-              Logout
-            </button>
+              {user.firstName}
+            </span>
+
+            {showPopup && (
+              <div
+                className="absolute right-0 mt-2 w-48 bg-white text-gray-800 shadow-lg rounded-lg p-2"
+                onMouseEnter={() => setShowPopup(true)}
+                onMouseLeave={() => setShowPopup(false)}
+              >
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 hover:bg-gray-200 rounded"
+                >
+                  Profile
+                </Link>
+                <Link
+                  to="/savedjobs"
+                  className="block px-4 py-2 hover:bg-gray-200 rounded"
+                >
+                  Saved Jobs
+                </Link>
+                <Link
+                  to="/appliedjobs"
+                  className="block px-4 py-2 hover:bg-gray-200 rounded"
+                >
+                  Applied Jobs
+                </Link>
+                <button
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-200 rounded"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>

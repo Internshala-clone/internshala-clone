@@ -10,6 +10,9 @@ import Jobs from "./components/Jobs";
 import JobPostingForm from "./components/JobPostingForm";
 import Jobapplyform from "./components/Jobapplyform";
 import TpoPage from "./components/TpoPage";
+import Profile from "./components/Profile";
+import Savedjobs from "./components/Savedjobs";
+import Appliedjobs from "./components/Appliedjobs";
 
 import Login from "./components/Login";
 const App = () => {
@@ -28,6 +31,9 @@ const App = () => {
           <Route path="/postjobs" element= {<JobPostingForm />} />
           <Route path="/applyjob/:jobid/:userid" element= {<Jobapplyform />} />
           <Route path="/tpopage" element= {<TpoPage/>} />
+          <Route path="/profile" element = {<Profile />} />
+          <Route path="/savedjobs" element = {<Savedjobs />} />
+          <Route path="/appliedjobs" element = {<Appliedjobs />} />
         </Routes>
       </Router>
     </div>

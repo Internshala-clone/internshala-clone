@@ -12,7 +12,8 @@ const mockJobListings = [
     company_name: "Tech Innovations",
     job_type: "Full-time",
     location: "Bangalore",
-    description: "Looking for a passionate software engineer with experience in React and Node.js.",
+    description:
+      "Looking for a passionate software engineer with experience in React and Node.js.",
   },
   {
     id: 2,
@@ -20,7 +21,8 @@ const mockJobListings = [
     company_name: "DataCorp",
     job_type: "Remote",
     location: "Mumbai",
-    description: "We need an experienced data analyst to handle business insights and reporting.",
+    description:
+      "We need an experienced data analyst to handle business insights and reporting.",
   },
   {
     id: 3,
@@ -28,7 +30,8 @@ const mockJobListings = [
     company_name: "AdGrowth",
     job_type: "Part-time",
     location: "Delhi",
-    description: "Seeking a creative marketing manager to lead our advertising strategies.",
+    description:
+      "Seeking a creative marketing manager to lead our advertising strategies.",
   },
 ];
 
@@ -43,11 +46,13 @@ const EmployerJobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [savedJobs, setSavedJobs] = useState(new Set());
 
-  const USE_MOCK_DATA = true; // Change to false to fetch real data
+  // const useBackend = import.meta.env.VITE_USE_BACKEND === "false";
+  // console.log("VITE_USE_BACKEND:", useBackend);
 
   useEffect(() => {
-    if (USE_MOCK_DATA) {
+    if (import.meta.env.VITE_USE_BACKEND === "false") {
       setCurrentUser(mockUser);
     } else {
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -70,7 +75,7 @@ const EmployerJobs = () => {
   }, []);
 
   useEffect(() => {
-    if (USE_MOCK_DATA) {
+    if (import.meta.env.VITE_USE_BACKEND === "false") {
       setJobListings(mockJobListings);
       setLoading(false);
     } else {
@@ -94,38 +99,70 @@ const EmployerJobs = () => {
 
       fetchJobs();
     }
-  }, []);
+  }, [currentUser]);
+
+  const saveJob = async (userId, jobId) => {
+    try {
+      await axios.post("http://localhost:5000/api/save-job", {
+        user_id: userId,
+        job_id: jobId,
+      });
+      setSavedJobs((prev) => new Set(prev).add(jobId));
+    } catch (error) {
+      console.error("Error saving job", error);
+    }
+  };
 
   return (
-    <section className="min-h-screen w-full flex flex-col justify-center items-center bg-gradient-to-r from-gray-800 to-gray-900 text-white text-center z-10 pt-24">
+    <section className="min-h-screen w-full flex flex-col justify-center items-center bg-white text-gray-900 text-center z-10 pt-24">
+      {/* Heading */}
       <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
-        Find the <span className="text-yellow-300">Best Talent</span> for Your Company
+        Find the <span className="text-orange-500">Best Talent</span> for Your
+        Company
       </h1>
-      <p className="text-lg max-w-2xl mx-auto">
-        Discover top candidates and post job opportunities to build your dream team.
+      <p className="text-lg max-w-2xl mx-auto text-gray-600">
+        Discover top candidates and post job opportunities to build your dream
+        team.
       </p>
 
+      {/* Subheading */}
       <h2 className="text-2xl md:text-3xl font-semibold mt-14">
-        Featured Job Opportunities <span className="text-yellow-300">🚀</span>
+        Featured Job Opportunities <span className="text-orange-500">🚀</span>
       </h2>
 
-      {loading && <p className="mt-6 text-yellow-300">Loading jobs...</p>}
+      {loading && <p className="mt-6 text-orange-500">Loading jobs...</p>}
       {error && <p className="mt-6 text-red-500">{error}</p>}
 
+      {/* Job Listings Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-12 max-w-6xl w-full px-4">
         {jobListings.map((job) => (
           <div
             key={job.id}
-            className="relative rounded-xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 bg-white text-gray-900 p-6"
+            className="relative rounded-xl overflow-hidden shadow-md transform transition duration-300 hover:scale-105 bg-white border border-gray-200 p-6"
           >
-            <h3 className="text-xl font-bold">{job.job_title}</h3>
-            <p className="text-md font-semibold text-indigo-600 mt-1">{job.company_name}</p>
+            <h3 className="text-xl font-bold text-gray-900">{job.job_title}</h3>
+            <p className="text-md font-semibold text-orange-500 mt-1">
+              {job.company_name}
+            </p>
             <p className="text-sm text-gray-600 mt-2">{job.job_type}</p>
             <p className="text-sm text-gray-600 mt-2">{job.description}</p>
             <div className="mt-4 flex justify-between items-center">
               <span className="text-gray-800 font-medium">{job.location}</span>
+              <button
+                onClick={() => saveJob(currentUser?.id, job.id)}
+                className="text-gray-500 hover:text-orange-500"
+              >
+                {savedJobs.has(job.id) ? "✅ Saved" : "🔖 Save"}
+              </button>
               <Link to={`/applyjob/${job.id}/${currentUser?.id || "guest"}`}>
-                <button className="text-indigo-600 font-bold hover:underline">
+                <button
+                  className={`text-orange-500 font-bold ${
+                    currentUser
+                      ? "hover:underline"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
+                  disabled={!currentUser}
+                >
                   Apply Now
                 </button>
               </Link>
@@ -134,9 +171,10 @@ const EmployerJobs = () => {
         ))}
       </div>
 
+      {/* Call-to-Action Button */}
       <div className="mt-12 mb-24">
         <Link to="/postjobs">
-          <button className="bg-yellow-300 text-gray-900 px-6 py-3 rounded-full text-lg font-medium shadow-md transition duration-300 hover:bg-yellow-400">
+          <button className="bg-orange-500 text-white px-8 py-3 rounded-full text-lg font-medium shadow-md transition duration-300 hover:bg-orange-600">
             Post a Job
           </button>
         </Link>

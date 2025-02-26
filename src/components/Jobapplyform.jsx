@@ -127,133 +127,77 @@ const Jobapplyform = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex flex-col items-center min-h-screen bg-white px-4">
       <Navbar />
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Apply for Job</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ✅ Unchangeable Job Details */}
-          <div>
-            <label className="block text-gray-700">Job Name</label>
-            <input
-              type="text"
-              value={jobDetails.jobName}
-              readOnly
-              className="w-full p-2 border rounded-md bg-gray-200"
-            />
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl border border-gray-200 mt-25">
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-6">
+          Apply for <span className="text-orange-500">Job</span>
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* ✅ Job Details (Read-Only) */}
+          <div className="grid grid-cols-2 gap-4">
+            {Object.entries(jobDetails).map(([key, value]) => (
+              <div key={key}>
+                <label className="block text-gray-700 font-medium capitalize">
+                  {key.replace(/([A-Z])/g, " $1")}
+                </label>
+                <input
+                  type="text"
+                  value={value}
+                  readOnly
+                  className="w-full p-2 border border-gray-300 rounded-md bg-gray-200"
+                />
+              </div>
+            ))}
           </div>
 
-          <div>
-            <label className="block text-gray-700">Company Name</label>
-            <input
-              type="text"
-              value={jobDetails.companyName}
-              readOnly
-              className="w-full p-2 border rounded-md bg-gray-200"
-            />
+          {/* ✅ User Editable Fields in Two Columns */}
+          <div className="grid grid-cols-2 gap-4">
+            {["firstName", "lastName", "email", "phone"].map((field) => (
+              <div key={field}>
+                <label className="block text-gray-700 font-medium capitalize">
+                  {field.replace(/([A-Z])/g, " $1")}
+                </label>
+                <input
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+            ))}
           </div>
 
+          {/* ✅ Resume Upload (Full Width) */}
           <div>
-            <label className="block text-gray-700">Location</label>
-            <input
-              type="text"
-              value={jobDetails.location}
-              readOnly
-              className="w-full p-2 border rounded-md bg-gray-200"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Salary</label>
-            <input
-              type="text"
-              value={jobDetails.salary}
-              readOnly
-              className="w-full p-2 border rounded-md bg-gray-200"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Job Type</label>
-            <input
-              type="text"
-              value={jobDetails.jobType}
-              readOnly
-              className="w-full p-2 border rounded-md bg-gray-200"
-            />
-          </div>
-
-          {/* ✅ User Editable Fields */}
-          <div>
-            <label className="block text-gray-700">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Phone</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border rounded-md"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700">Upload Resume</label>
+            <label className="block text-gray-700 font-medium">
+              Upload Resume
+            </label>
             <input
               type="file"
               name="resume"
               accept=".pdf,.doc,.docx"
               onChange={handleFileChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
+          {/* ✅ Apply Button */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+            className="w-full bg-orange-500 text-white p-2 rounded-md text-lg font-semibold shadow-md transition duration-300 hover:bg-orange-600"
           >
             Apply Now
           </button>
         </form>
 
+        {/* ✅ Success Message Popup */}
         {showPopup && (
-          <div className="mt-4 p-2 text-center bg-green-500 text-white rounded-md">
-            Applied to Job Successfully!
+          <div className="mt-4 p-3 text-center bg-green-500 text-white font-medium rounded-md">
+            🎉 Application Submitted Successfully!
           </div>
         )}
       </div>
