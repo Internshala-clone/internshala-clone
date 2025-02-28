@@ -13,6 +13,9 @@ const mockSavedJobs = [
     company_name: "Tech Innovations",
     job_type: "Full-time",
     location: "Bangalore",
+    description:
+      "Looking for a passionate software engineer with experience in React and Node.js.",
+    posted_on: "2024-02-20",
   },
   {
     id: 2,
@@ -20,6 +23,9 @@ const mockSavedJobs = [
     company_name: "DataCorp",
     job_type: "Remote",
     location: "Mumbai",
+    description:
+      "We need an experienced data analyst to handle business insights and reporting.",
+    posted_on: "2024-02-18",
   },
 ];
 
@@ -85,8 +91,8 @@ const SavedJobs = () => {
   return (
     <div>
       <Navbar />
-      <div className="mt-24 p-6">
-        <h1 className="text-2xl font-bold text-gray-800">Saved Jobs</h1>
+      <div className="mt-24 p-6 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Saved Jobs</h1>
 
         {loading && (
           <p className="text-orange-500 mt-4">Loading saved jobs...</p>
@@ -101,18 +107,29 @@ const SavedJobs = () => {
           {savedJobs.map((job) => (
             <div
               key={job.id}
-              className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
             >
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900">
                 {job.job_title}
               </h3>
-              <p className="text-sm text-orange-500">{job.company_name}</p>
-              <p className="text-sm text-gray-600">{job.job_type}</p>
-              <p className="text-sm text-gray-600">{job.location}</p>
-
+              <p className="text-gray-600">{job.company_name}</p>
+              <p className="text-gray-500 text-sm mt-1">
+                {job.location} • {job.job_type}
+              </p>
+              <p className="text-gray-700 mt-4">{job.description}</p>
+              <div className="mt-4 text-sm text-gray-600">
+                <p>
+                  <span className="font-semibold">Posted On:</span>{" "}
+                  {new Date(job.posted_on).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
               <div className="mt-4 flex justify-between items-center">
                 <Link to={`/applyjob/${job.id}/${currentUser?.id || "guest"}`}>
-                  <button className="text-orange-500 font-bold hover:underline">
+                  <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors">
                     Apply Now
                   </button>
                 </Link>

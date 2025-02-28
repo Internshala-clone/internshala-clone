@@ -18,6 +18,8 @@ const AppliedJobs = () => {
       location: "Bangalore",
       description:
         "Looking for a passionate software engineer with experience in React and Node.js.",
+      status: "Under Review",
+      applied_on: "2024-02-20",
     },
     {
       id: 2,
@@ -27,6 +29,8 @@ const AppliedJobs = () => {
       location: "Mumbai",
       description:
         "We need an experienced data analyst to handle business insights and reporting.",
+      status: "Shortlisted",
+      applied_on: "2024-02-18",
     },
     {
       id: 3,
@@ -36,6 +40,8 @@ const AppliedJobs = () => {
       location: "Delhi",
       description:
         "Seeking a creative marketing manager to lead our advertising strategies.",
+      status: "Rejected",
+      applied_on: "2024-02-15",
     },
   ];
 
@@ -85,16 +91,49 @@ const AppliedJobs = () => {
   return (
     <div>
       <Navbar />
-      <div className="mt-24 p-6">
-        <h1 className="text-2xl font-bold text-gray-800">Applied Jobs</h1>
+      <div className="mt-24 p-6 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Applied Jobs</h1>
         {error && <p className="text-red-500">{error}</p>}
-        <div className="mt-4">
+        <div className="space-y-6">
           {appliedJobs.length > 0 ? (
             appliedJobs.map((job) => (
-              <div key={job.id} className="p-4 border-b">
-                <h2 className="text-xl font-semibold">{job.job_title}</h2>
-                <p className="text-gray-600">{job.company_name}</p>
-                <p className="text-gray-500">{job.location}</p>
+              <div
+                key={job.id}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900">
+                      {job.job_title}
+                    </h2>
+                    <p className="text-gray-600">{job.company_name}</p>
+                    <p className="text-gray-500 text-sm mt-1">
+                      {job.location} • {job.job_type}
+                    </p>
+                  </div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      job.status === "Under Review"
+                        ? "bg-blue-100 text-blue-800"
+                        : job.status === "Shortlisted"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {job.status}
+                  </span>
+                </div>
+                <p className="text-gray-700 mt-4">{job.description}</p>
+                <div className="mt-4 text-sm text-gray-600">
+                  <p>
+                    <span className="font-semibold">Applied On:</span>{" "}
+                    {new Date(job.applied_on).toLocaleDateString("en-IN", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
               </div>
             ))
           ) : (
